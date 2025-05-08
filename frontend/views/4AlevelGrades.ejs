@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIT EduGuide - Find Your Program</title>
+    <style>
+        /* Styles from the original A Level Course Grades form */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c3483 0%, #6499ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1s forwards 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .form-label {
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 500;
+            min-width: 150px;
+        }
+
+        .form-select {
+            flex: 1;
+            padding: 1rem;
+            border-radius:.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .subject-list {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .subject-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.5s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subject-details {
+            color: white;
+            font-weight: 500;
+        }
+
+        .subject-grade {
+            font-weight: 700;
+            color: #2ecc71;
+            margin-left: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2e7bff 0%, #1a56ff 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: auto;
+        }
+
+        .btn-next {
+            margin-left: auto;
+        }
+
+        .footer {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 1rem;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.visible {
+            opacity: 1;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: sparkle 4s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-select {
+                width: 100%;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn-add, .btn-next {
+                width: 100%;
+                margin: 0;
+            }
+
+            .content-wrapper {
+                padding: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Styles for the Programs page (moved here) */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .program-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.5s forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .program-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .program-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .program-details {
+            margin-top: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .match-percentage {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2ecc71;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .match-bar {
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            width: 100%;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .program-subjects {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .subject-tag {
+            padding: 0.3rem 0.6rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(90deg, #2e7bff 0%, #1a56ff 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .action-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div class="particles">
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+</div>
+
+<header class="header">
+    <a href="/dashboard" class="back-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+    </a>
+
+    <a href="#" class="logo">
+        <svg class="logo-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+        </svg>
+        HIT EduGuide
+    </a>
+
+    <a href="#" class="nav-btn logout-btn">Logout</a>
+</header>
+
+<div class="container">
+    <div class="content-wrapper">
+        <h1 class="form-title">A Level Course Grades</h1>
+        <p class="form-subtitle">Please enter your A Level subjects and indicate your most recent coursework grade completed.</p>
+
+        <form id="gradeForm">
+            <div class="form-group">
+                <label class="form-label">Select Subject:</label>
+                <select id="subjectSelect" class="form-select" style="background-color: lightskyblue">
+                    <option value="" selected disabled>--Select a Subject--</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Business Studies">Business Studies</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Geography">Geography</option>
+                    <option value="Food Science">Food Science</option>
+                    <option value="Technical Drawing">Technical Drawing</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Economics">Economics</option>
+                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    <option value="Metallurgy">Metallurgy</option>
+                    <option value="Statistics">Statistics</option>
+                </select>
+
+                <label class="form-label">Select Grade:</label>
+                <select id="gradeSelect" class="form-select" style="background-color: lightskyblue">
+                    <option value="" selected disabled>--Select a Grade--</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+            </div>
+
+            <div id="subjectList" class="subject-list">
+
+            </div>
+
+            <div class="btn-group">
+                <button type="button" id="addSubject" class="btn btn-secondary btn-add">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Subject
+                </button>
+
+                <button type="button" id="nextPage" class="btn btn-primary btn-next">
+                    Next Page
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px;">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <p id="validationMessage" class="error-message"></p>
+        </form>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>Hit EduGuide is free for students</p>
+    <p>&copy; 2025 HIT EduGuide. All rights reserved.</p>
+</footer>
+
+<script>
+    // Create sparkle animation
+    function createSparkles() {
+        const container = document.querySelector('.particles');
+        const numSparkles = 20;
+
+        for (let i = 0; i < numSparkles; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkles');
+
+            // Random position
+            sparkle.style.left = `${Math.random() * 100}%`;
+            sparkle.style.top = `${Math.random() * 100}%`;
+
+            // Random animation delay
+            sparkle.style.animationDelay = `${Math.random() * 4}s`;
+
+            container.appendChild(sparkle);
+        }
+    }
+
+    // Function to add subject
+    function addSubject() {
+        const subjectSelect = document.getElementById('subjectSelect');
+        const gradeSelect = document.getElementById('gradeSelect');
+        const subjectList = document.getElementById('subjectList');
+        const validationMessage = document.getElementById('validationMessage');
+
+        // Validate selections
+        if (subjectSelect.value === "" || gradeSelect.value === "") {
+            validationMessage.textContent = 'Please select both a subject and a grade.';
+            validationMessage.classList.add('visible');
+            return;
+        }
+
+        // Create new subject item
+        const subjectItem = document.createElement('div');
+        subjectItem.classList.add('subject-item');
+
+        // Set the index for identification
+        const index = document.querySelectorAll('.subject-item').length;
+
+        // Create subject details element
+        const subjectDetails = document.createElement('span');
+        subjectDetails.classList.add('subject-details');
+        subjectDetails.innerHTML = `${subjectSelect.value}: <span class="subject-grade">${gradeSelect.value}</span>`;
+
+        // Create remove button
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('btn', 'btn-secondary', 'remove-btn');
+        removeButton.setAttribute('data-index', index);
+        removeButton.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      `;
+
+        // Add event listener to remove button
+        removeButton.addEventListener('click', function() {
+            subjectItem.style.opacity = '0';
+            setTimeout(() => {
+                subjectList.removeChild(subjectItem);
+                updateIndices();
+            }, 300);
+        });
+
+        // Append elements to subject item
+        subjectItem.appendChild(subjectDetails);
+        subjectItem.appendChild(removeButton);
+
+        // Append to the list with animation
+        subjectItem.style.opacity = '0';
+        subjectList.appendChild(subjectItem);
+
+        // Reset selection
+        subjectSelect.value = "";
+        gradeSelect.value = "";
+
+        // Clear validation message
+        validationMessage.classList.remove('visible');
+
+        // Trigger animation
+        setTimeout(() => {
+            subjectItem.style.opacity = '1';
+        }, 10);
+    }
+
+    // Update indices after removal
+    function updateIndices() {
+        const removeButtons = document.querySelectorAll('.remove-btn');
+        removeButtons.forEach((button, index) => {
+            button.setAttribute('data-index', index);
+        });
+    }
+
+    // Function to collect data and proceed
+    function proceedToNext() {
+        const subjectItems = document.querySelectorAll('.subject-item');
+        const validationMessage = document.getElementById('validationMessage');
+
+        if (subjectItems.length === 0) {
+            validationMessage.textContent = 'Please add at least one subject before proceeding.';
+            validationMessage.classList.add('visible');
+            return;
+        }
+
+        // Collect data
+        const subjectData = [];
+        subjectItems.forEach(item => {
+            const details = item.querySelector('.subject-details').textContent;
+            const subject = details.split(':')[0].trim();
+            const grade = details.split(':')[1].trim();
+            subjectData.push({ subject, grade });
+        });
+
+        // Send data to backend
+        fetch('/api/careers/findProgram', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                option1: subjectData[0] ? subjectData[0].subject : '',
+                option2: subjectData[1] ? subjectData[1].subject : '',
+                option3: subjectData[2] ? subjectData[2].subject : '',
+                grade1: subjectData[0] ? subjectData[0].grade : '',
+                grade2: subjectData[1] ? subjectData[1].grade : '',
+                grade3: subjectData[2] ? subjectData[2].grade : ''
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ensure the data has the correct structure
+                const programData = { programs: data.programs }; // Assuming the backend returns {"programs": [...]}
+                localStorage.setItem('programData', JSON.stringify(programData));
+
+                // Redirect to the Programs page
+                window.location.href = '/programs';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                validationMessage.textContent = 'An error occurred. Please try again.';
+                validationMessage.classList.add('visible');
+            });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        createSparkles();
+
+        // Add event listeners
+        document.getElementById('addSubject').addEventListener('click', addSubject);
+        document.getElementById('nextPage').addEventListener('click', proceedToNext);
+
+        // Add initial remove button functionality
+        const removeInitial = document.querySelector('.remove-btn');
+        if (removeInitial) {
+            removeInitial.addEventListener('click', function() {
+                const item = this.closest('.subject-item');
+                item.style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('subjectList').removeChild(item);
+                }, 300);
+            });
+        }
+
+        // Handle logout
+        document.querySelector('.logout-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            alert('You have been logged out.');
+            window.location.href = '/';
+        });
+    });
+</script>
+</body>
+</html>
